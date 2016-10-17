@@ -1,0 +1,120 @@
+---
+title: "nimcno: núcleo da inflação com modelos de componentes não observados"
+author: "Cristiano Santos"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## Descrição dos dados 
+
+Antes de aplicar o modelo de componentes não observados é necessário saber se a hipótese de raiz unitária I(1) é atendida pelas séries inseridas no modelo.
+
+A tabela a seguir apresenta os teste de 
+
+```{r descriptive, results='asis'}
+library(nimcno)
+tsmz <- macro95[, c('ipca', 'selicr', 'logpibr')]
+tab <- tab.stationary(tsmz)
+knitr::kable(tab)
+```
+
+
+## Gráficos das séries
+
+
+```{r graf desc, results='asis'}
+tsplot(tsmz)
+tsplot(diff(tsmz))
+```
+
+
+## Tabela cointegração
+
+```{r cointeg}
+tab <- tab.cointeg(tsmz)
+knitr::kable(tab)
+```
+
+
+
+## Tabela resultados da estimacao
+
+```{r uc }
+bn.ipca <- ucmodel(x = macro95[,"ipca"], l = 3,
+                   init = c(rep(c(1.5, 0.4, 0.2), 1),# ar pars
+                            c(-0.5), # var arima
+                            c(-1), # var level
+                            rep(0.01, 1) # cov arima level
+                            ))
+tab <- pars.ucmodel(bn.ipca)$tab
+knitr::kable(tab, caption = "BN univariado")
+```
+
+```{r uc mult}
+bn2 <- ucmodel(x = macro95[,c('ipca', 'selicr')], l=2, 
+               init=c(c(2, 0.2),
+                      c(2, 0.2),
+                      c(-0.5, -0.5),  # var arima
+                      c(-1.2, -1.2), # var level
+                      0.001, # cov level 
+                      0.01,  # cov arima
+                      rep(0.001, 4) # cov level arima
+               ), corre = TRUE)
+
+tab <- pars.ucmodel(bn2)$tab
+knitr::kable(tab, caption = "BN multivariado")
+```
+
+
+## Grafico dos componentes
+
+```{r graf uc}
+ucplot(bn.ipca, state = "level")
+ucplot(bn2, state = "level")
+```
+
+
+## Grafico dos núcleos
+
+```{r graf core}
+core.ipca1 <- bn.ipca$out$alphahat[,'level']
+core.ipca2 <- bn2$out$alphahat[,'level.ipca']
+core <- macro95[,c('ipca.ex2', 'ipca.ex', 'ipca.ma', 'ipca.mas', 'ipca.dp')]
+core <- cbind(core, core.ipca1, core.ipca2)
+x <- acum(core)
+y <- acum(macro95[,'ipca'])
+tsplot(x, y)
+```
+
+
+## Tabela estacionaridade dos nucleos
+
+```{r estaci core, warning=FALSE}
+tab <- tab.stationary(core, d = FALSE)
+knitr::kable(tab)
+```
+
+
+## Tabela estacionaridade dos componente transitorio
+
+```{r estaci transit, warning=FALSE}
+tab <- tab.stationary(core - macro95[,"ipca"], d = FALSE)
+knitr::kable(tab)
+```
+
+## Tabela cointegração
+
+
+## Tabela condicoes de Marques
+
+```{r marques, warning=FALSE}
+tab <- tab.marques(y = macro95[,'ipca'], x = core)
+knitr::kable(tab)
+```
+
+

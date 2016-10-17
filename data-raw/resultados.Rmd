@@ -1,0 +1,151 @@
+---
+title: "resultados e dicussoes"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Descrição dos dados 
+
+Antes de aplicar o modelo de componentes não observados é necessário saber se a hipótese de raiz unitária I(1) é atendida pelas séries inseridas no modelo.
+
+A tabela a seguir apresenta os teste de 
+
+```{r descriptive, results='asis'}
+devtools::load_all()
+tsmz <- macro95[, c('ipca', 'selicr')]
+tab <- tab.stationary(tsmz)
+knitr::kable(tab)
+```
+
+
+## Gráficos das séries
+
+
+```{r graf desc, results='asis'}
+x <- macro95[, c('ipca', 'selicr', 'ipca.ex2', "ipca.ex")]
+colnames(x) <- c("IPCA", "SELIC", "IPCA-EX2", "IPCA-EX")
+tsplot(x)
+x <- macro95[, c('ipca.ma', 'ipca.mas', 'ipca.dp', "ipc.br.core")]
+colnames(x) <- c("IPCA-MA", "IPCA-MAS", "IPCA-DP", "IPC-BR")
+tsplot(x)
+```
+
+
+## Tabela cointegração
+
+```{r cointeg}
+tab <- tab.cointeg(tsmz)
+knitr::kable(tab)
+```
+
+
+
+## Tabela resultados da estimacao
+
+```{r uc }
+bn.ipca <- ucmodel(x = macro95[,"ipca"], l = 2,
+                   init = c(rep(c(2, 0.2), 1),# ar pars
+                            c(-0.7), # var arima
+                            c(-1.2), # var level
+                            rep(0.001, 1) # cov arima level
+                            ))
+tab <- pars.ucmodel(bn.ipca)
+knitr::kable(tab$tab, caption = "BN univariado")
+knitr::kable(tab$ar, caption = "BN univariado")
+knitr::kable(tab$mu, caption = "BN univariado")
+```
+
+```{r uc mult}
+bn2 <- ucmodel(x = macro95[,c('ipca', 'selicr')], l=2, 
+               init=c(c(2, 0.2),
+                      c(2, 0.2),
+                      c(-0.5, -0.5),  # var arima
+                      c(-1.2, -1.2), # var level
+                      0.001, # cov level 
+                      0.01,  # cov arima
+                      rep(0.001, 4) # cov level arima
+               ), corre = TRUE)
+
+tab <- pars.ucmodel(bn2)
+knitr::kable(tab$tab, caption = "BN multivariado")
+knitr::kable(tab$ar, caption = "BN multivariado")
+knitr::kable(tab$mu, caption = "BN multivariado")
+```
+
+
+## Grafico dos componentes
+
+```{r graf uc}
+# componentes permanentes 
+x <- cbind(bn.ipca$out$alphahat[,"level"],
+           bn2$out$alphahat[,"level.ipca"],
+           bn2$out$alphahat[,"level.selicr"])
+# series observadas
+y <- cbind(bn.ipca$out$model$y,
+           bn2$out$model$y)
+# desvio padrao dos componentes
+dp <- cbind(ic.ucmodel(bn.ipca, state = "level")$v,
+           ic.ucmodel(bn2, state = "level")$v)
+# intervalo de confianca 95% 
+ic <- ic(x, dp = dp, nc = 0.95)
+# nome dos componentes
+colnames(x) <- c("IPCA-CP1", "IPCA-CP2", "SELIC-CP2")
+
+#plot
+biplot(x, y, upper = ic$upper, lower = ic$lower)
+
+```
+
+
+## Grafico dos núcleos
+
+```{r graf core}
+core.cp1 <- bn.ipca$out$alphahat[,'level']
+core.cp2 <- bn2$out$alphahat[,'level.ipca']
+core <- macro95[,c('ipca.ex2', "ipca.ex", 'ipca.ma', 'ipca.mas', 'ipca.dp', "ipc.br.core")]
+core <- cbind(core, core.cp1, core.cp2)
+x <- acum(core)
+y <- acum(macro95[,'ipca'])
+colnames(x) <- c("IPCA-EX2", "IPCA-EX", "IPCA-MA", "IPCA-MAS", "IPCA-DP", "IPC-BR", "IPCA-CP1", "IPCA-CP2")
+tsplot(x[,1:4], y)
+tsplot(x[,5:8], y)
+```
+
+
+## Tabela estacionaridade dos nucleos
+
+```{r estaci core, warning=FALSE}
+tab <- tab.stationary(core, d = FALSE)
+knitr::kable(tab)
+```
+
+
+## Tabela estacionaridade dos componente transitorio
+
+```{r estaci transit, warning=FALSE}
+tab <- tab.stationary(core - macro95[,"ipca"], d = FALSE)
+knitr::kable(tab)
+```
+
+## Tabela UCM
+
+```{r tabucm transit, warning=FALSE}
+tab <- tab.ucmodel(bn2)
+knitr::kable(tab)
+```
+
+
+
+## Tabela condicoes de Marques
+
+```{r marques, warning=FALSE}
+tab <- tab.marques(y = macro95[,'ipca'], x = core)
+knitr::kable(tab)
+tab <- tab.marques(y = acum(macro95[,'ipca']), x = acum(core))
+knitr::kable(tab)
+```
+
+
