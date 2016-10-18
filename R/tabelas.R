@@ -9,6 +9,7 @@
 #' 
 #' @param stat valor da estatistica do teste
 #' @param cval vetor com os valores criticos do teste para 10\%, 5\% e 1\%
+#' @param comp logical. If TRUE (the default) the statistics is print too
 #' 
 #' @return um objeto "character" com valor da estatistica do teste formatado
 #' junto com "***" para 1\%, "**" para 5\%, "*" para 10\% e " " nao significativo
@@ -16,13 +17,17 @@
 #' @export
 #'
 
-sig <- function(stat, cval){
+sig <- function(stat, cval, comp = TRUE){
   x <- sum(abs(stat)>abs(cval))
   if(x==3) sig <- "***"
   if(x==2) sig <- "** "
   if(x==1) sig <- "*  "
   if(x==0) sig <- "   "
-  return(c(paste(format(round(stat,3), digits = 3, nsmall = 3, decimal.mark=","), sig, sep = "")))
+  if(comp){
+    return(c(paste(format(round(stat,3), digits = 3, nsmall = 3, decimal.mark=","), sig, sep = "")))
+  }else{
+    return(sig)
+  }
 }
 
 #' Tabela para o teste de estacionaridade ADF e KPSS
