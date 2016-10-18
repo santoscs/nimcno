@@ -245,6 +245,9 @@ tab.marques <- function(y, x){
 #' por virgula
 #' 
 #' @param x um objeto com valores numericos
+#' @param dig the minimum number of digits to the right 
+#' of the decimal point in formatting real numbers 
+#' in non-scientific formats
 #' 
 #' @return o mesmo objeto que foi fornecido com numeros 
 #' transformados em texto formatado
@@ -252,8 +255,8 @@ tab.marques <- function(y, x){
 #' @export
 #' 
 
-n2tab <- function(x){
-  format(round(x, 3), digits = 3, nsmall = 3, decimal.mark=",") 
+n2tab <- function(x, dig = 3){
+  format(round(x, dig), digits = dig, nsmall = dig, decimal.mark=",") 
 }
 
 
