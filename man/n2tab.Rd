@@ -4,10 +4,14 @@
 \alias{n2tab}
 \title{Transforma numero e texto formatado}
 \usage{
-n2tab(x)
+n2tab(x, dig = 3)
 }
 \arguments{
 \item{x}{um objeto com valores numericos}
+
+\item{dig}{the minimum number of digits to the right 
+of the decimal point in formatting real numbers 
+in non-scientific formats}
 }
 \value{
 o mesmo objeto que foi fornecido com numeros 

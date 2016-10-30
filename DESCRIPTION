@@ -3,7 +3,8 @@ Title: Estima Nucleo da Inflacao com Modelos de Componentes Nao Observados
 Version: 0.0.0.9000
 Authors@R: person("Cristiano", "Santos", email = "cristiano1br@gmail.com", role = c("aut", "cre"))
 Description: Estima Nucleo da Inflacao com Modelos de Componentes Nao Observados
-    com representacao em espaco de estados
+    com representacao em espaco de estados usando maxima verossimilhanca e
+    filtro de Kalman
 Depends:
     R (>= 3.3.0)
 License: file LICENSE

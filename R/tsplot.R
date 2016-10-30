@@ -29,13 +29,19 @@ tsplot <- function(x, y = NULL, escala = 'free_y', facet = TRUE, name = NULL){
   if(!is.null(y)){
     y <- zoo::as.zoo(y)
     df.y <- zoo::fortify.zoo(y, melt = TRUE)
-    df <- ggplot2::fortify(cbind(df.x, Value2=df.y[,3]), index.name = "Index")
-    p <- ggplot2::ggplot(data = df, ggplot2::aes(x = Index, y = Value))
-    p <- p + ggplot2::geom_line(data = df, ggplot2::aes(x = Index, y = Value2),
-                                linetype="dotted", size = 1/2)
-    p <- p + ggplot2::geom_line(size = 1/2, alpha = 3/4)  
-    p <- p + ggplot2::facet_grid(Series ~ ., scales = "free_y") 
-    #p <- p + ggplot2::facet_wrap(~ Series, scales = "free_y")
+    if(facet){
+      df <- ggplot2::fortify(cbind(df.x, Value2=df.y[,3]), index.name = "Index")
+      p <- ggplot2::ggplot(data = df, ggplot2::aes(x = Index, y = Value))
+      p <- p + ggplot2::geom_line(data = df, ggplot2::aes(x = Index, y = Value2),
+                                  linetype="dotted", size = 1/2)
+      p <- p + ggplot2::geom_line(size = 1/2, alpha = 3/4)  
+      p <- p + ggplot2::facet_grid(Series ~ ., scales = "free_y") 
+      #p <- p + ggplot2::facet_wrap(~ Series, scales = "free_y")
+    }else{
+      p <- ggplot(df.x, aes(x = Index, y = Value))
+      p <- p + geom_line(data = df.y, aes(x = Index, y = Value, group = Series), size = 1/2, alpha = 3/4)
+      p <- p + geom_line(linetype="dotted", size = 1/2)  # Drawing the "overlayer"
+    }
     p <- p + ggplot2::labs(y="", x="")
     p <- p + ggplot2::theme_bw()
     return(p)  

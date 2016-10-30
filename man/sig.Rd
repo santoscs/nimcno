@@ -4,12 +4,14 @@
 \alias{sig}
 \title{Significancia de um teste}
 \usage{
-sig(stat, cval)
+sig(stat, cval, comp = TRUE)
 }
 \arguments{
 \item{stat}{valor da estatistica do teste}
 
 \item{cval}{vetor com os valores criticos do teste para 10\%, 5\% e 1\%}
+
+\item{comp}{logical. If TRUE (the default) the statistics is print too}
 }
 \value{
 um objeto "character" com valor da estatistica do teste formatado
