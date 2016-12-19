@@ -14,7 +14,7 @@ devtools::use_data_raw()
 #salve este arquivo em data-raw
 
 # Ignora essa rotina em data-raw
-devtools::use_build_ignore("data-raw/package_creation.R")
+devtools::use_build_ignore("data-raw")
 
 # Ignora Rproj do Rstudio
 devtools::use_build_ignore("nimcno.Rproj")
@@ -67,11 +67,3 @@ devtools::document()
 devtools::check()
 # instala
 devtools::install()
-
-
-# apenas carrega o pacote
-devtools::load_all()
-
-
-# Teste do pacote
-

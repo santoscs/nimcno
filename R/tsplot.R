@@ -33,31 +33,31 @@ tsplot <- function(x, y = NULL, escala = 'free_y', facet = TRUE, name = NULL){
       df <- ggplot2::fortify(cbind(df.x, Value2=df.y[,3]), index.name = "Index")
       p <- ggplot2::ggplot(data = df, ggplot2::aes(x = Index, y = Value))
       p <- p + ggplot2::geom_line(data = df, ggplot2::aes(x = Index, y = Value2),
-                                  linetype="dotted", size = 1/2)
-      p <- p + ggplot2::geom_line(size = 1/2, alpha = 3/4)  
+                                  linetype=2, colour="red", size = 1/2, alpha = 1)
+      p <- p + ggplot2::geom_line(size = 1/2, alpha = 1, colour="blue")  
       p <- p + ggplot2::facet_grid(Series ~ ., scales = "free_y") 
       #p <- p + ggplot2::facet_wrap(~ Series, scales = "free_y")
     }else{
       p <- ggplot(df.x, aes(x = Index, y = Value))
-      p <- p + geom_line(data = df.y, aes(x = Index, y = Value, group = Series), size = 1/2, alpha = 3/4)
-      p <- p + geom_line(linetype="dotted", size = 1/2)  # Drawing the "overlayer"
+      p <- p + geom_line(data = df.y, aes(x = Index, y = Value, group = Series), size = 1/2, alpha = 1, colour="blue")
+      p <- p + geom_line(linetype=2, size = 1/2, alpha = 1, colour="blue")  # Drawing the "overlayer"
     }
     p <- p + ggplot2::labs(y="", x="")
-    p <- p + ggplot2::theme_bw()
+    p <- p + ggplot2::theme_bw(base_size=14)
     return(p)  
   }
   if(!facet){
-    p <- ggplot2::ggplot(data = df.x, ggplot2::aes(x = Index, y = Value, color=Series))
-    p <- p + ggplot2::geom_line(size = 1/2, alpha = 3/4)  
-    p <- p + ggplot2::theme_bw()
+    p <- ggplot2::ggplot(data = df.x, ggplot2::aes(x = Index, y = Value, color=Series, linetype=Series))
+    p <- p + ggplot2::geom_line(size = 1/2, alpha = 1)  
+    p <- p + ggplot2::labs(y="", x="")
+    p <- p + ggplot2::theme_bw(base_size=14)
     return(p)  
-    
   }else{
     p <-ggplot2::ggplot(df.x, ggplot2::aes(x=Index, y=Value, group_by())) +
-      ggplot2::geom_line(size = 1/2, alpha = 3/4) +
+      ggplot2::geom_line(size = 1/2, alpha = 1, colour="blue") +
       ggplot2::facet_grid(Series ~ ., scales = escala) +
       ggplot2::labs(y="", x="") +
-      ggplot2::theme_bw()
+      ggplot2::theme_bw(base_size=14)
   }
   return(p)
 }
@@ -123,4 +123,42 @@ biplot <- function(x, y, upper, lower){
 }
 
 
+
+
+#' ts theme ggplot2
+#'
+#' ts theme set the general aspect of the plot such as 
+#' the colour of the background, gridlines, the size and colour of fonts
+#' 
+#' @param base_size base font size
+#' @param base_family base font family
+#' 
+#' @details theme_ts is based in the classic dark-on-light ggplot2 theme. 
+#' May work better for presentations displayed with a projector
+#' 
+#' @examples 
+#' \dontrun{ 
+#' p <- ggplot(mtcars) + geom_point(aes(x = wt, y = mpg, 
+#' colour=factor(gear))) + facet_wrap(~am)
+#' p
+#' p + theme_ts()
+#' }
+#' 
+#' @import ggplot2
+#' @export
+#' 
+
+theme_ts <- function (base_size = 12, base_family = "") 
+{
+  theme_grey(base_size = base_size, base_family = base_family) %+replace% 
+    theme(axis.text = element_text(size = rel(0.8)), 
+          strip.text = element_text(size = rel(0.9)),
+          axis.ticks = element_line(colour = "black"),
+          legend.key = element_rect(colour = "grey80"), 
+          panel.background = element_rect(fill = "white", colour = NA), 
+          panel.border = element_rect(fill = NA, colour = "grey50"), 
+          panel.grid.major = element_line(colour = "grey88", size = 0.2),
+          panel.grid.minor = element_line(colour = "grey98", size = 0.5), 
+          strip.background = element_rect(fill = "grey80", colour = "grey50", size = 0.2))
+}
 
