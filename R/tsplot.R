@@ -48,7 +48,7 @@ tsplot <- function(x, y = NULL, escala = 'free_y', facet = TRUE, name = NULL){
   }
   if(!facet){
     p <- ggplot2::ggplot(data = df.x, ggplot2::aes(x = Index, y = Value, color=Series, linetype=Series))
-    p <- p + ggplot2::geom_line(size = 1/2, alpha = 1)  
+    p <- p + ggplot2::geom_line(size = 3/4)  
     p <- p + ggplot2::labs(y="", x="")
     p <- p + ggplot2::theme_bw(base_size=14)
     return(p)  
@@ -112,10 +112,10 @@ biplot <- function(x, y, upper, lower){
   df <- ggplot2::fortify(cbind(df.x, Value2=df.y[,3], upper=ic.upper[,3], lower=ic.lower[,3]), index.name = "Index")
   p <- ggplot2::ggplot(data = df, ggplot2::aes(x = Index, y = Value))
   p <- p + ggplot2::geom_line(data = df, ggplot2::aes(x = Index, y = Value2),
-                              linetype="dotted", size = 1/2)
+                              linetype=2, size = 1/2, color = "red")
   p <- p + ggplot2::geom_ribbon(ggplot2::aes(ymin=lower, ymax=upper),
                                 alpha=0.3)
-  p <- p + ggplot2::geom_line(size = 1/2, alpha = 3/4)
+  p <- p + ggplot2::geom_line(size = 1/2, color = "blue")
   p <- p + ggplot2::facet_grid(Series ~ ., scales = "free_y") 
   p <- p + ggplot2::labs(y="", x="")
   p <- p + ggplot2::theme_bw()

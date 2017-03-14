@@ -5,12 +5,12 @@
 \title{Estima o modelo de componentes nao observaveis com tendencia
 e ciclo por maxima verossimelhanca}
 \usage{
-ucmodel(x, l, init, corre = TRUE)
+ucmodel(x, lag, init, corre = TRUE)
 }
 \arguments{
 \item{x}{um objeto mts com a serie temporia multivariada}
 
-\item{l}{numero de defagens do modelo AR}
+\item{lag}{numero de defagens do modelo AR}
 
 \item{init}{valores iniciais dos parametros a serem estimados}
 

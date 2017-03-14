@@ -4,9 +4,11 @@
 #tab.stationary(diff(tsm[,c("logpibr", "logm1")]))
 
 
+
 ## Epecifica modelos individuais
 
 # estima cada modelo separadamente
+
 
 library(nimcno)
 
@@ -19,23 +21,39 @@ bn.ipca <- ucmodel(x = macro95[,"ipca"], l = 3,
 
 ucplot(bn.ipca, state = "level")
 core <- bn.ipca$out$alphahat[,'level']
-
 bn.ipca$fit$model$T
 bn.ipca$fit$model$Q
 
 
 # selicr
-x <- tsm[,"selicr"]
-bn.selicr <- ucmodel(x = x, l = 3,
-                   init = c(rep(c(1.5, 0.4, 0.2), 1),# ar pars
+x <- macro95[,"selic"]
+bn.selicr <- ucmodel(x = x, l = 2,
+                   init = c(rep(c(2, 0.2), 1),# ar pars
                             c(-0.3), # var arima
                             c(-1.6), # var level
                             rep(0.01, 1) # cov arima level
                    ))
 
+ucplot(bn.selicr, state = "level")
+
 tsplot(bn.selicr$out$alphahat[,'level'], tsm[,"selicr"])
 bn.selicr$fit$model$T
 bn.selicr$fit$model$Q
+
+# conjunto
+
+x <- macro95[,c('ipca', 'selic')]
+bn1 <- ucmodel(x = x, l=2, 
+               init=c(c(0.70, -0.19),
+                      c(0.73, 0.72),
+                      c(-0.5, -0.3, -2, -1),  # var arima
+                      c(-1, -1.6, -3, -2), # var level
+                      rep(0.01, 6), # cov arima 
+                      rep(0.01, 6) # cov level
+                      #rep(0.01, 16) # cov arima level
+               ), corre = FALSE)
+
+
 
 # logpibr
 bn.logpibr <- ucmodel(x = (macro95[,"logpibr"]), l = 2,

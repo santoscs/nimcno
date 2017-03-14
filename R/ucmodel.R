@@ -10,7 +10,7 @@
 #' e ciclo por maxima verossimelhanca usando o pacote "KFAS"
 #' 
 #' @param x um objeto mts com a serie temporia multivariada
-#' @param l numero de defagens do modelo AR 
+#' @param lag numero de defagens do modelo AR 
 #' @param init valores iniciais dos parametros a serem estimados 
 #' @param corre logical, se TRUE (padrao) modelo com componentes 
 #' correlacionado, se FALSE modelo com componentes restrito se 
@@ -23,17 +23,17 @@
 #' @export
 #'       
 
-ucmodel <- function(x, l, init, corre = TRUE){
+ucmodel <- function(x, lag, init, corre = TRUE){
   requireNamespace("KFAS")
   p <- dim(as.matrix(x))[2]
-  ar0 <- lapply(apply(matrix(0, l, p), 2, list), unlist)
+  ar0 <- lapply(apply(matrix(0, lag, p), 2, list), unlist)
   model <- SSModel(x ~ -1 + SSMtrend(degree = 2, Q=list(diag(1,p), diag(0,p)), type = "distinct", index = 1:p) +
                      SSMarima(ar = ar0, Q=diag(1,p), index =1:p),
                    H = diag(0, p))
   likfn <- function(pars, model){
-    arl <- lapply(apply(matrix(pars[1:(l*p)], l, p), 2, list),unlist)
-    tmp <- try(SSModel(x ~ -1 + SSMtrend(degree = 2, Q=list(diag(exp(2*pars[((l+1)*p+1):((l+2)*p)]), p), diag(0,p)), type = "distinct") +
-                         SSMarima(ar = lapply(arl, artransform), Q=diag(exp(2*pars[(l*p+1):((l+1)*p)]), p), index = 1:p),
+    arl <- lapply(apply(matrix(pars[1:(lag*p)], lag, p), 2, list),unlist)
+    tmp <- try(SSModel(x ~ -1 + SSMtrend(degree = 2, Q=list(diag(exp(2*pars[((lag+1)*p+1):((lag+2)*p)]), p), diag(0,p)), type = "distinct") +
+                         SSMarima(ar = lapply(arl, artransform), Q=diag(exp(2*pars[(lag*p+1):((lag+1)*p)]), p), index = 1:p),
                        H = diag(0, p)), silent = TRUE)
     if(!inherits(tmp, "try-error")){
       model["T"] <- tmp$T
@@ -43,16 +43,16 @@ ucmodel <- function(x, l, init, corre = TRUE){
       Q <- tmp$Q[,,1]
       types <- attributes(tmp)$eta_types
       #covariancia level
-      snn <- pars[((l+2)*p + 1):((l+2)*p + ((p^2-p)/2))] #* sn[upper.tri(sn)]
+      snn <- pars[((lag+2)*p + 1):((lag+2)*p + ((p^2-p)/2))] #* sn[upper.tri(sn)]
       id1 <- types == "level"
       Q[id1,id1][upper.tri(Q[id1,id1])] <- snn
       # covariancia arima
-      see <- pars[((l+2)*p + 1 + ((p^2-p)/2)):((l+2)*p + 2*((p^2-p)/2))] #*se[upper.tri(se)]
+      see <- pars[((lag+2)*p + 1 + ((p^2-p)/2)):((lag+2)*p + 2*((p^2-p)/2))] #*se[upper.tri(se)]
       id2 <- types == "arima"
       Q[id2,id2][upper.tri(Q[id2,id2])] <- see
       # covariancia level arima 
       if(corre){
-        snene <- pars[((l+2)*p + 1 + 2*((p^2-p)/2)):((l+2)*p + 2*((p^2-p)/2) + p*p)] 
+        snene <- pars[((lag+2)*p + 1 + 2*((p^2-p)/2)):((lag+2)*p + 2*((p^2-p)/2) + p*p)] 
         Q[id1, id2] <- snene
       }
       model["Q"][ , , 1] <- crossprod(Q)
@@ -73,6 +73,58 @@ ucmodel <- function(x, l, init, corre = TRUE){
   return(list(out=out, fit=fit))
 }
 
+
+
+
+#' Cria o modelo de componentes nao observaveis com tendencia
+#' e ciclo 
+#' 
+#' Cria o modelo de componentes nao observaveis com tendencia
+#' usando o pacote "KFAS"
+#' 
+#' @param x um objeto mts com a serie temporia multivariada
+#' @param lag numero de defagens do modelo AR 
+#' @param pars valores dos parametros  
+#' @param corre logical, se TRUE (padrao) modelo com componentes 
+#' correlacionado, se FALSE modelo com componentes restrito se 
+#' correlacao
+#'
+#' @return uma lista com os seguinte objetos fit (\link[KFAS]{fitSSM}) e out (\link[KFAS]{KFS})
+#' 
+#' @import KFAS
+#' 
+#' @export
+#'       
+
+ucm <- function(x, lag, pars, corre = TRUE){
+  requireNamespace("KFAS")
+  p <- dim(as.matrix(x))[2]
+  arl <- lapply(apply(matrix(pars[1:(lag*p)], lag, p), 2, list),unlist)
+  tmp <- try(SSModel(x ~ -1 + SSMtrend(degree = 2, Q=list(diag(exp(2*pars[((lag+1)*p+1):((lag+2)*p)]), p), diag(0,p)), type = "distinct") +
+                       SSMarima(ar = lapply(arl, artransform), Q=diag(exp(2*pars[(lag*p+1):((lag+1)*p)]), p), index = 1:p),
+                     H = diag(0, p)), silent = TRUE)
+  if(!inherits(tmp, "try-error")){
+    Q <- tmp$Q[,,1]
+    types <- attributes(tmp)$eta_types
+    #covariancia level
+    snn <- pars[((lag+2)*p + 1):((lag+2)*p + ((p^2-p)/2))] #* sn[upper.tri(sn)]
+    id1 <- types == "level"
+    Q[id1,id1][upper.tri(Q[id1,id1])] <- snn
+    # covariancia arima
+    see <- pars[((lag+2)*p + 1 + ((p^2-p)/2)):((lag+2)*p + 2*((p^2-p)/2))] #*se[upper.tri(se)]
+    id2 <- types == "arima"
+    Q[id2,id2][upper.tri(Q[id2,id2])] <- see
+    # covariancia level arima 
+    if(corre){
+      snene <- pars[((lag+2)*p + 1 + 2*((p^2-p)/2)):((lag+2)*p + 2*((p^2-p)/2) + p*p)] 
+      Q[id1, id2] <- snene
+    }
+    tmp["Q"][ , , 1] <- crossprod(Q)
+  } else {
+    stop("parametros nao factiveis")
+  }
+  return(tmp)
+}
 
 
 

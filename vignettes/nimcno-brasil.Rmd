@@ -18,7 +18,7 @@ A tabela a seguir apresenta os teste de
 
 ```{r descriptive, results='asis'}
 library(nimcno)
-tsmz <- macro95[, c('ipca', 'selicr', 'logpibr')]
+tsmz <- macro95[, c('ipca', 'selicr')]
 tab <- tab.stationary(tsmz)
 knitr::kable(tab)
 ```
@@ -45,7 +45,7 @@ knitr::kable(tab)
 ## Tabela resultados da estimacao
 
 ```{r uc }
-bn.ipca <- ucmodel(x = macro95[,"ipca"], l = 3,
+bn.ipca <- ucmodel(x = macro95[,"ipca"], lag = 3,
                    init = c(rep(c(1.5, 0.4, 0.2), 1),# ar pars
                             c(-0.5), # var arima
                             c(-1), # var level
