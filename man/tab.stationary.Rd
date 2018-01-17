@@ -19,4 +19,3 @@ tabela tabela com as estatisticas dos testes
 Efetua o teste ADF e KPSS para series em nivel e 
 diferenciadas e fornece uma tabela com as estatisticas
 }
-

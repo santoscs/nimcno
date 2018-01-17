@@ -29,4 +29,3 @@ e contem as series macroeconomicas mensais de janeiro de 1995 ate
 maio de 2016
 }
 \keyword{datasets}
-

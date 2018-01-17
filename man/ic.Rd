@@ -21,4 +21,3 @@ uma lista com
 \description{
 Calcula o intervalo de confianca para uma estimativa pontual
 }
-

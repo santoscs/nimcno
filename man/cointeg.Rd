@@ -33,4 +33,3 @@ Conducts the Johansen procedure on a given data set.
 The "trace" or "eigen" statistics are reported. 
 A wrapper for the \link[urca]{ca.jo} function in the urca package.
 }
-

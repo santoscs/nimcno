@@ -18,4 +18,3 @@ um vetor com os teste "ADF", "t alpha", "t gamma", 't lambda', 'F thetas'
 Testa os criterios de Marques et al (2003) que uma 
 medida de nucleo da inflacao deve atender
 }
-

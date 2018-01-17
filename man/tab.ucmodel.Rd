@@ -15,4 +15,3 @@ uma tabela com as estimativas
 \description{
 Tabela com as estimativas do ucmodel
 }
-

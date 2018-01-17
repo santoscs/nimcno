@@ -17,4 +17,3 @@ uma lista com ar (parametros autoregressivos), sigma
 Extrair os paramentros do modelo de componentes nao observaveis
 estimado por ucmodel
 }
-

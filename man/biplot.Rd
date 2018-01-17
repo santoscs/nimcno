@@ -21,4 +21,3 @@ ggplot das series
 \description{
 Plot com ggplot2
 }
-

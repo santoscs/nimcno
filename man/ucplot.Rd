@@ -22,4 +22,3 @@ ggplot das series
 \description{
 Plota ucmodel com ggplot2
 }
-

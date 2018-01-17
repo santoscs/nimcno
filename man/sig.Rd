@@ -21,4 +21,3 @@ junto com "***" para 1\%, "**" para 5\%, "*" para 10\% e " " nao significativo
 Fornece o valor da estatistica de um teste junto com a indicacao
 da significancia para valores 10\%, 5\% e 1\%.
 }
-

@@ -23,4 +23,3 @@ A defasagem selecionda
 Seleciona a defasagem para o teste ADF segundo o criterio
 AIC ou BIC para um maximo de defasagens
 }
-

@@ -18,4 +18,3 @@ tabela com as estatisticas dos testes
 Efetua o teste para as condicoes Marques et. al. (2003) para o nucleo e inflacao
  e fornece uma tabela com as estatisticas
 }
-

@@ -39,7 +39,7 @@ tsplot <- function(x, y = NULL, escala = 'free_y', facet = TRUE, name = NULL){
       #p <- p + ggplot2::facet_wrap(~ Series, scales = "free_y")
     }else{
       p <- ggplot(df.x, aes(x = Index, y = Value))
-      p <- p + geom_line(data = df.y, aes(x = Index, y = Value, group = Series), size = 1/2, alpha = 1, colour="blue")
+      p <- p + geom_line(data = df.y, aes(x = Index, y = Value, group = Series, size = Series), size = 1/2, alpha = 1, colour="blue")
       p <- p + geom_line(linetype=2, size = 1/2, alpha = 1, colour="blue")  # Drawing the "overlayer"
     }
     p <- p + ggplot2::labs(y="", x="")

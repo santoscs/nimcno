@@ -18,4 +18,3 @@ A time series univariate
 Transforma uma serie mensal dada em percentual ao mes 
 em uma serie mensal com percentual nos ultimos m meses
 }
-

@@ -35,4 +35,3 @@ Object of class SSModel (ver \link[KFAS]{SSModel})
 Adaptadacao da funcao \link[KFAS]{SSMarima} do package KFAS 
 para permitir parametros regressivos diferentes entre as series
 }
-

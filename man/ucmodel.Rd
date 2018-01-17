@@ -25,4 +25,3 @@ uma lista com os seguinte objetos fit (\link[KFAS]{fitSSM}) e out (\link[KFAS]{K
 Estima o modelo de componentes nao observaveis com tendencia
 e ciclo por maxima verossimelhanca usando o pacote "KFAS"
 }
-

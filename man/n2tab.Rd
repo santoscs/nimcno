@@ -22,4 +22,3 @@ Transforma numero e texto formatado para serem mostrados na
 tabela, o numero arredondado para 3 casas decimais e separado
 por virgula
 }
-

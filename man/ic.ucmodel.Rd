@@ -25,4 +25,3 @@ uma lista com
 Calcula o intervalo de confianca de Bonferroni para um
 componente estimado por ucmodel
 }
-

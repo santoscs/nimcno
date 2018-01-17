@@ -16,4 +16,3 @@ tabela com as estatisticas dos testes
 Efetua o teste de cointegracao de Johansen para series e 
 fornece uma tabela com as estatisticas
 }
-
